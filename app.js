@@ -1,26 +1,15 @@
-const http = require("http");
-const fs = require("fs");
+const express = require("express");
+const bodyParser = require("body-parser");
 
-function reqListener(req, res) {
-  const url = req.url;
-  const method = req.method;
+const adminRoute = require("./routes/admin");
+const shopRoute = require("./routes/shop");
 
-  if (url === "/" && method === "GET") {
-    res.setHeader("Content-Type", "text/html");
-    res.write("<html>");
-    res.write("<p>hi there!</p>");
-    res.write("</html>");
-    return res.end();
-  }
+const app = express();
 
-  if (url === "/message" && method === "POST") {
-    console.log(req);
-    fs.writeFileSync("message.txt", "Test success");
-    res.statusCode = 302;
-    return res.end();
-  }
-}
+app.use(bodyParser.urlencoded({ extended: false }));
 
-const server = http.createServer(reqListener);
+app.use(adminRoute);
 
-server.listen(3000);
+app.use(shopRoute);
+
+app.listen(3000);
